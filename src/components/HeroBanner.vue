@@ -39,24 +39,36 @@
       </div>
     </div>
   </div>
-  <section class="bg-black text-white py-6 owerflow-hidden">
-    <Swiper
-      :modules="[Autoplay]"
-      :slides-per-view="2"
-      :space-between="20"
-      :autoplay="{ delay: 2000 }"
-      :loop="true"
-      :breakpoints="{
-        640: { slidesPerView: 3 },
-        1024: { slidesPerView: 5 }
-      }"
-      class="max-w-7xl mx-auto px-6"
-    >
-      <SwiperSlide v-for="(icon, i) in icons" :key="i">
-        <img :src="icon" alt="" class="mx-auto h-8 object-contain" />
-      </SwiperSlide>
-    </Swiper>
-  </section>
+<section class="bg-black text-white py-6">
+  <!-- Мобильный слайдер -->
+  <Swiper
+    v-if="isMobile"
+    :modules="[Autoplay]"
+    :slides-per-view="2"
+    :space-between="20"
+    :autoplay="{ delay: 2000 }"
+    :loop="true"
+    class="max-w-7xl mx-auto px-6"
+  >
+    <SwiperSlide v-for="(icon, i) in icons" :key="i">
+      <img :src="icon" alt="" class="mx-auto h-8 object-contain" />
+    </SwiperSlide>
+  </Swiper>
+
+  <!-- Десктоп -->
+  <div
+    v-else
+    class="max-w-7xl mx-auto px-6 flex justify-between items-center gap-6"
+  >
+    <img
+      v-for="(icon, i) in icons"
+      :key="i"
+      :src="icon"
+      alt=""
+      class="h-8 object-contain"
+    />
+  </div>
+</section>
 </template>
 
 <style scoped>
@@ -79,4 +91,21 @@ import icon4 from '../assets/icon4.png';
 import icon5 from '../assets/icon5.png';
 
 const icons = [icon1, icon2, icon3, icon4, icon5];
+
+import { ref, onMounted, onUnmounted } from 'vue';
+
+const isMobile = ref(false);
+
+function checkWidth() {
+  isMobile.value = window.innerWidth < 768;
+}
+
+onMounted(() => {
+  checkWidth();
+  window.addEventListener('resize', checkWidth);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkWidth);
+});
 </script>
